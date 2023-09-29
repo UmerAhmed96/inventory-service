@@ -44,13 +44,17 @@ public class ItemServiceImpl implements ItemService {
     @Value("${keycloak.realm}")
     private String realm;
 
+    // Injected dependencies
+    private final ItemRepository itemRepository;
+    private final ItemMapper itemMapper;
 
     @Autowired
-    private ItemRepository itemRepository;
+    public ItemServiceImpl(ItemRepository itemRepository, ItemMapper itemMapper) {
+        this.itemRepository = itemRepository;
+        this.itemMapper = itemMapper;
+    }
 
-    @Autowired
-    private ItemMapper itemMapper;
-
+    // Retrieves all items from the database
     @Override
     public List<ItemDTO> getAllItems() {
         List<Item> items = itemRepository.findAll();
@@ -59,6 +63,7 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
+    // Retrieves an item by its ID
     @Override
     public ItemDTO getItemById(int itemId) {
         return itemRepository.findById(itemId)
@@ -66,6 +71,7 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new ItemNotFoundException("Item with ID " + itemId + " not found"));
     }
 
+    // Creates a new item
     @Override
     public ItemDTO createItem(ItemDTO itemDTO) {
         int itemId = itemDTO.getItemId();
@@ -77,6 +83,7 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.toItemDTO(itemRepository.save(newItem));
     }
 
+    // Updates an existing item
     @Override
     public ItemDTO updateItem(int itemId, ItemDTO updatedItemDTO) {
         // Check if the item with the given ID exists
@@ -103,6 +110,7 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.toItemDTO(itemRepository.save(existingItem));
     }
 
+    // Deletes an item by its ID
     @Override
     public void deleteItem(int itemId) {
         if (!itemRepository.existsById(itemId)) {
@@ -111,10 +119,29 @@ public class ItemServiceImpl implements ItemService {
         itemRepository.deleteById(itemId);
     }
 
+    // Deletes all items
+    @Override
+    public void deleteAll() {
+        itemRepository.deleteAll();
+    }
 
+    // Retrieves items with pagination and sorting
+    @Override
+    public Page<ItemDTO> getAllItemsPage(int pageSize, int page, String sortBy) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(sortBy));
+        return itemRepository.findAll(pageable).map(itemMapper::toItemDTO);
+    }
+
+    // Retrieves items by status and entered by a user
+    public List<Item> getItemsByStatusAndEnteredBy(String status, String enteredBy) {
+        return itemRepository.findByItemStatusAndItemEnteredByUser(status, enteredBy);
+    }
+
+    // Authenticates a user and retrieves an access token
+    @Override
     public AccessTokenResponse signIn() {
         Map<String, Object> clientCredentials = new HashMap<>();
-        clientCredentials.put("secret", "JxbxYKlE9s7eiWVMgnIWaYXwCl6G6xi2");
+        clientCredentials.put("secret", "bfZbR1L3PIUIaMehRyba7G3fXBkDT2lN");
         clientCredentials.put("grant_type", "password");
         Configuration configuration =
                 new Configuration(keycloakAuthUrl, realm, client, clientCredentials, null);
@@ -130,15 +157,6 @@ public class ItemServiceImpl implements ItemService {
             throw new KeycloakException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ignored.getMessage());
         }
         return accessTokenResponse;
-    }
-
-    @Override
-    public void deleteAll() {
-        itemRepository.deleteAll();
-    }
-    public Page<ItemDTO> getAllItemsPage(int pageSize, int page, String sortBy) {
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(sortBy));
-        return itemRepository.findAll(pageable).map(itemMapper::toItemDTO);
     }
 
 

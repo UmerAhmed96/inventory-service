@@ -3,6 +3,7 @@ package com.example.inventorytask.service;
 
 import com.example.inventorytask.dto.ItemDTO;
 import com.example.inventorytask.dto.LoginRequest;
+import com.example.inventorytask.model.Item;
 import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.data.domain.Page;
 
@@ -16,7 +17,7 @@ public interface ItemService {
     void deleteItem(int itemId);
     AccessTokenResponse signIn();
     void deleteAll();
-    public Page<ItemDTO> getAllItemsPage(int pageSize, int page, String sortBy);
-
+    Page<ItemDTO> getAllItemsPage(int pageSize, int page, String sortBy);
+    List<Item> getItemsByStatusAndEnteredBy(String status, String enteredBy);
 
     }

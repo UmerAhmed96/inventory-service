@@ -37,9 +37,6 @@ public class  KeycloakConfig {
     @Value("${keycloak.realm}")
     private String realm;
 
-    /**
-     * Instead of the default Keycloak.json, use the Spring Boot properties file.
-     */
     @Bean
     public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
         return new KeycloakSpringBootConfigResolver();

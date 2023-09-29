@@ -8,6 +8,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 
 @Data
@@ -29,7 +30,7 @@ public class ItemDTO {
     @Pattern(regexp = "^(AVAILABLE)$", message = "Invalid item status")
     private String itemStatus;
 
-    private String itemLastModifiedDate;
+    private Date itemLastModifiedDate;
     private String itemLastModifiedByUser;
     private String itemEnteredDate;
 

@@ -17,7 +17,7 @@ public class ItemMapper {
                 .itemEnteredDate(String.valueOf(item.getItemEnteredDate()))
                 .itemBuyingPrice(item.getItemBuyingPrice())
                 .itemSellingPrice(item.getItemSellingPrice())
-                .itemLastModifiedDate(String.valueOf(item.getItemLastModifiedDate()))
+                .itemLastModifiedDate(item.getItemLastModifiedDate())
                 .itemLastModifiedByUser(item.getItemLastModifiedByUser())
                 .itemStatus(item.getItemStatus())
                 .build();
@@ -26,9 +26,12 @@ public class ItemMapper {
     public Item toItem(ItemDTO itemDTO) {
         Item item = new Item();
         item.setItemName(itemDTO.getItemName());
+        item.setItemEnteredByUser(itemDTO.getItemEnteredByUser());
         item.setItemBuyingPrice(itemDTO.getItemBuyingPrice());
         item.setItemSellingPrice(itemDTO.getItemSellingPrice());
         item.setItemStatus(itemDTO.getItemStatus());
+        item.setItemLastModifiedByUser(itemDTO.getItemLastModifiedByUser());
+        item.setItemLastModifiedDate(itemDTO.getItemLastModifiedDate());
 
         return item;
     }
